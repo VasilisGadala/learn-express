@@ -63,6 +63,7 @@ app.post('/write/adduser', (req: UserRequest, res: Response) => {
    */
   const dataFileSize = fs.statSync(path.resolve(__dirname, dataFile)).size;
   if(dataFileSize > 1024) {
+    // useful for "ONEVENT" functionality
     bkupEmitter.emit('bkup', users, path.resolve(__dirname, bkupFile)); // emit bkup event when the file size is over 10 Kb
   }
   else {

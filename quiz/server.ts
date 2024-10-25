@@ -39,7 +39,7 @@ const addMsgToRequest = (req: UserRequest, res: Response, next: NextFunction) =>
   }
 };
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'http://localhost:3000' })); // Middleware functions
 app.use('/read/usernames', addMsgToRequest);
 
 app.get('/read/usernames', (req: UserRequest, res: Response) => {
@@ -47,6 +47,22 @@ app.get('/read/usernames', (req: UserRequest, res: Response) => {
     return { id: user.id, username: user.username };
   });
   res.send(usernames);
+});
+
+app.use('/read/username', addMsgToRequest);
+app.get('/read/username/:name', (req: UserRequest, res: Response) => {
+  const username = req.params.name;
+  const usersWithUsername = users.filter(user => user.username === username);
+
+  if (usersWithUsername.length > 0) {
+    const emails = usersWithUsername.map(user => ({
+      id: user.id,
+      email: user.email
+    }));
+    res.send(emails);
+  } else {
+    res.status(404).json({ error: { message: 'User not found', status: 404 } });
+  }
 });
 
 app.use(express.json());
